@@ -36,6 +36,7 @@ fn main() {
         stdin().read_line(&mut input).expect("Failed to read line");
 
         let input = input.trim();
+        let args: Vec<&str> = input.split(' ').collect();
 
         if input == ""{
             stdout.execute(Print("Please enter command. Don't just press enter!\n")).unwrap();
@@ -45,13 +46,16 @@ fn main() {
         let date_time_now = Local::now();
         let formatted_date_time_now = date_time_now.format("Date: |%Y|%m|%d|  Time: |%H|%M|%S|\n").to_string();
 
-        stdout.execute(Print(formatted_date_time_now)).unwrap();
+        stdout.execute(Print(&formatted_date_time_now)).unwrap();
 
         commands_history.push(input.to_string());
-        commands_history_time.push(input.to_string());
+        commands_history_time.push(formatted_date_time_now);
 
         if input == "exit"{
             exit(0);
+        }
+        if args[0] == "hmt"{
+            get_commands_history(args, &commands_history, &commands_history_time);
         }
     }
 }
@@ -66,6 +70,18 @@ fn get_hostname() -> String{
         .unwrap_or_else(|_| "unknown".to_string())
 }
 #[allow(dead_code)]
-fn get_commands_history(){
-
+fn get_commands_history(args: Vec<&str>, commands_history: &[String], commands_history_time: &[String]){
+    
+    let mut stdout = stdout();
+    let size = commands_history.len();
+    if args[1] == "-al"{
+        for idx in 0..(size - 1){
+            stdout.execute(Print(format!("-> {}\n", commands_history[idx]))).unwrap();
+        }
+    }
+    else if args[1] == "-alt"{
+        for idx in 0..(size - 1){
+            stdout.execute(Print(format!("-> {}   {}\n", commands_history[idx], commands_history_time[idx]))).unwrap();
+        }
+    }
 }
