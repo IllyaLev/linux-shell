@@ -1,3 +1,5 @@
+mod gui;
+
 #[allow(unused_imports)]
 use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, ExecutableCommand};
 #[allow(unused_imports)]
