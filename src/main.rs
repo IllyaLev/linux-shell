@@ -58,6 +58,9 @@ fn main() {
         else if args[0] == "hmt"{
             get_commands_history(args, &commands_history, &commands_history_time);
         }
+        else if args[0] == "about"{
+            about();
+        }
     }
 }
 
@@ -94,4 +97,14 @@ fn print_highlighted(input: String, color: Color){
         .execute(Print(input))
         .unwrap();
     stdout.execute(ResetColor).unwrap();
+}
+
+fn about(){
+    let text = "\n
+    Welcome! This is linux shell, project that implement linux commands and some unique commands.\n
+    This shell is created by only using Rust\n
+    Project is developed by Illia Levadskyi, who is studying in high school right now.
+\n";
+    print_highlighted(text.to_string(), Color::Yellow);
+    
 }
