@@ -22,9 +22,9 @@ fn main() {
 
     let font = FIGfont::standard().unwrap();
 
-    let figure = font.convert("Shell Linux");
+    let figure = font.convert("Linux Shell");
 
-    println!("{}", figure.unwrap());
+    print_highlighted(figure.unwrap().to_string(), Color::Green);
 
     loop{
         let user_and_host = format!("{}@{}\n", username, hostname);
