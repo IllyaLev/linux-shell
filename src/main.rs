@@ -16,7 +16,8 @@ fn main() {
 
     let mut stdout = stdout();
 
-    let commands_history: Vec<String> = Vec::new();
+    let mut commands_history: Vec<String> = Vec::new();
+    let mut commands_history_time: Vec<String> = Vec::new();
 
     loop{
         let user_and_host = format!("{}@{}\n", username, hostname);
@@ -45,6 +46,9 @@ fn main() {
         let formatted_date_time_now = date_time_now.format("Date: |%Y|%m|%d|  Time: |%H|%M|%S|\n").to_string();
 
         stdout.execute(Print(formatted_date_time_now)).unwrap();
+
+        commands_history.push(input.to_string());
+        commands_history_time.push(input.to_string());
 
         if input == "exit"{
             exit(0);
