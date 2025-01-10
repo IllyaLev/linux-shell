@@ -4,7 +4,7 @@ use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, 
 use std::io::{stdin, stdout, Write};
 #[allow(unused_imports)]
 use std::process::exit;
-use std::process::Command;
+//use std::process::Command;
 use hostname::get;
 use chrono::Local;
 use figlet_rs::FIGfont;
@@ -12,12 +12,16 @@ use figlet_rs::FIGfont;
 //* const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) }; 
 //* template of const color
 
+#[allow(dead_code)]
 const LIGHT_YELLOW: Color =  Color::Rgb { r: (((0xF7E733 >> 16) & 0xFF) as u8), g: (((0xF7E733 >> 8) & 0xFF) as u8), b: (((0xF7E733 & 0xFF) as u8)) };
 const LIGHT_GREEN: Color = Color::Rgb { r: (((0x14CC60 >> 16) & 0xFF) as u8), g: (((0x14CC60 >> 8) & 0xFF) as u8), b: (((0x14CC60 & 0xFF) as u8)) };
+#[allow(dead_code)]
 const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) };
 
 #[allow(unused_variables)]
 fn main() {
+
+    // TODO: create ls function like dir in windows
 
     let username = get_username();
     let hostname = get_hostname();
@@ -54,7 +58,7 @@ fn main() {
         let date_time_now = Local::now();
         let formatted_date_time_now = date_time_now.format("Date: |%Y|%m|%d|  Time: |%H|%M|%S|\n").to_string();
 
-        stdout.execute(Print(&formatted_date_time_now)).unwrap();
+        //stdout.execute(Print(&formatted_date_time_now)).unwrap();
 
         commands_history.push(input.to_string());
         commands_history_time.push(formatted_date_time_now);
@@ -84,6 +88,9 @@ fn main() {
                 .execute(Clear(ClearType::Purge))
                 .unwrap();
         }
+        else if args[0] == "help"{
+            help();
+        }
     }
 }
 
@@ -108,7 +115,9 @@ fn get_commands_history(args: Vec<&str>, commands_history: &[String], commands_h
     }
     else if args[1] == "-alt"{
         for idx in 0..(size - 1){
-            stdout.execute(Print(format!("-> {}   {}\n", commands_history[idx], commands_history_time[idx]))).unwrap();
+            let text = format!("{}\n", commands_history_time[idx]);
+            stdout.execute(Print(format!("-> {}   ", commands_history[idx]))).unwrap();
+            print_highlighted(text, LIGHT_YELLOW);
         }
     }
 }
@@ -124,9 +133,22 @@ fn print_highlighted(input: String, color: Color){
 
 fn about(){
     let text = "
-    Welcome! This is linux shell, project that implement linux commands and some unique commands.\n
+    Welcome! This is linux shell, project that implement linux commands and some unique commands for Windows\n
     This shell is created by only using Rust\n
     Project is developed by Illia Levadskyi, who is studying in high school right now.
 \n";
     print_highlighted(text.to_string(), LIGHT_GREEN);
+}
+
+fn help(){
+    let text = "
+    Here is list of available commands:                                 \n
+        1 echo - outputs text in shell                                  \n
+        2 exit - exits shell                                            \n
+        3 about - gives information about project                       \n
+        4 hmt - outputs history of commands of current shell.           \n
+            Have 2 flags: -al and -alt                                  \n
+                -al - outputs only command                              \n
+                -alt - outputs command + date and time of it's execution\n\n";
+    print_highlighted(text.to_string(), ORANGE);
 }
