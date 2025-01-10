@@ -8,7 +8,12 @@ use hostname::get;
 use chrono::Local;
 use figlet_rs::FIGfont;
 
-const LIGHT_YELLOW: u32 = 0xF7E733;
+//* const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) }; 
+//* template of const color
+
+const LIGHT_YELLOW: Color =  Color::Rgb { r: (((0xF7E733 >> 16) & 0xFF) as u8), g: (((0xF7E733 >> 8) & 0xFF) as u8), b: (((0xF7E733 & 0xFF) as u8)) };
+const LIGHT_GREEN: Color = Color::Rgb { r: (((0x14CC60 >> 16) & 0xFF) as u8), g: (((0x14CC60 >> 8) & 0xFF) as u8), b: (((0x14CC60 & 0xFF) as u8)) };
+const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) };
 
 #[allow(unused_variables)]
 fn main() {
@@ -109,19 +114,10 @@ fn print_highlighted(input: String, color: Color){
 }
 
 fn about(){
-    let text = "\n
+    let text = "
     Welcome! This is linux shell, project that implement linux commands and some unique commands.\n
     This shell is created by only using Rust\n
     Project is developed by Illia Levadskyi, who is studying in high school right now.
 \n";
-    print_highlighted(text.to_string(), convert_hex_to_rgb(LIGHT_YELLOW));
-}
-
-fn convert_hex_to_rgb(hex_color: u32) -> Color
-{
-    let r = ((hex_color >> 16) & 0xFF) as u8;
-    let g = ((hex_color >> 8) & 0xFF) as u8;
-    let b = (hex_color & 0xFF) as u8;
-
-    Color::Rgb { r: r, g: g, b: b }
+    print_highlighted(text.to_string(), LIGHT_GREEN);
 }
