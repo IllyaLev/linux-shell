@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, ExecutableCommand, terminal::{Clear, ClearType}, cursor::MoveTo};
+use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, ExecutableCommand, terminal::{Clear, ClearType, SetTitle}, cursor::MoveTo};
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write};
 #[allow(unused_imports)]
@@ -22,6 +22,10 @@ const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0
 fn main() {
 
     // TODO: create ls function like dir in windows
+
+    let title = "Linux Shell";
+
+    stdout().execute(SetTitle(title)).unwrap();
 
     let username = get_username();
     let hostname = get_hostname();
