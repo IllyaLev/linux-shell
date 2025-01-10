@@ -8,6 +8,7 @@ use hostname::get;
 use chrono::Local;
 use figlet_rs::FIGfont;
 
+const LIGHT_YELLOW: u32 = 0xF7E733;
 
 #[allow(unused_variables)]
 fn main() {
@@ -113,6 +114,14 @@ fn about(){
     This shell is created by only using Rust\n
     Project is developed by Illia Levadskyi, who is studying in high school right now.
 \n";
-    print_highlighted(text.to_string(), Color::Yellow);
-    
+    print_highlighted(text.to_string(), convert_hex_to_rgb(LIGHT_YELLOW));
+}
+
+fn convert_hex_to_rgb(hex_color: u32) -> Color
+{
+    let r = ((hex_color >> 16) & 0xFF) as u8;
+    let g = ((hex_color >> 8) & 0xFF) as u8;
+    let b = (hex_color & 0xFF) as u8;
+
+    Color::Rgb { r: r, g: g, b: b }
 }
