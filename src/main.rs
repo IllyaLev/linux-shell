@@ -61,6 +61,14 @@ fn main() {
         else if args[0] == "about"{
             about();
         }
+        else if args[0] == "echo"{
+            let input = input.trim();
+            let output = &input[5..];
+            stdout.execute(Print(output))
+                .unwrap()
+                .execute(Print("\n"))
+                .unwrap();
+        }
     }
 }
 
