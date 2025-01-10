@@ -1,9 +1,10 @@
 #[allow(unused_imports)]
-use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, ExecutableCommand};
+use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, ExecutableCommand, terminal::{Clear, ClearType}, cursor::MoveTo};
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write};
 #[allow(unused_imports)]
 use std::process::exit;
+use std::process::Command;
 use hostname::get;
 use chrono::Local;
 use figlet_rs::FIGfont;
@@ -45,7 +46,7 @@ fn main() {
 
         let args: Vec<&str> = input.trim().split(' ').collect();
 
-        if input == ""{
+        if args[0] == ""{
             stdout.execute(Print("Please enter command. Don't just press enter!\n")).unwrap();
             continue;
         }
@@ -73,6 +74,14 @@ fn main() {
             stdout.execute(Print(output))
                 .unwrap()
                 .execute(Print("\n"))
+                .unwrap();
+        }
+        else if args[0] == "clear"{
+            stdout.execute(Clear(ClearType::All))
+                .unwrap()
+                .execute(MoveTo(0,0))
+                .unwrap()
+                .execute(Clear(ClearType::Purge))
                 .unwrap();
         }
     }
