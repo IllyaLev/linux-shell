@@ -15,10 +15,9 @@ use std::path::Path;
 //* const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) }; 
 //* template of const color
 
-#[allow(dead_code)]
+const LIGHT_RED: Color = Color::Rgb { r: (((0xFE6D73 >> 16) & 0xFF) as u8), g: (((0xFE6D73 >> 8) & 0xFF) as u8), b: (((0xFE6D73 & 0xFF) as u8)) };
 const LIGHT_YELLOW: Color =  Color::Rgb { r: (((0xF7E733 >> 16) & 0xFF) as u8), g: (((0xF7E733 >> 8) & 0xFF) as u8), b: (((0xF7E733 & 0xFF) as u8)) };
 const LIGHT_GREEN: Color = Color::Rgb { r: (((0x14CC60 >> 16) & 0xFF) as u8), g: (((0x14CC60 >> 8) & 0xFF) as u8), b: (((0x14CC60 & 0xFF) as u8)) };
-#[allow(dead_code)]
 const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) };
 const BLUE: Color = Color::Rgb { r: (((0x26408B >> 16) & 0xFF) as u8), g: (((0x26408B >> 8) & 0xFF) as u8), b: (((0x26408B & 0xFF) as u8)) };
 
@@ -51,8 +50,10 @@ fn main() {
     print_highlighted(figure.unwrap().to_string(), Color::Green);
 
     loop{
-        let user_and_host = format!("{}@{}\n", username, hostname);
+        let user_and_host = format!("{}@{} ", username, hostname);
+        let path = format!("{}\n", Path::new(".").display());
         print_highlighted(user_and_host, Color::DarkGreen);
+        print_highlighted(path, LIGHT_YELLOW);
 
         stdout.execute(Print("$ ")).unwrap();
 
@@ -107,6 +108,9 @@ fn main() {
         else if args[0] == "ls"{
             let path = if args.len() == 1 || args[1].is_empty() { "." } else { args[1] };
             let _ = ls(path);
+        }
+        else{
+            print_highlighted(format!("Invalid command: {}", input), LIGHT_RED);
         }
     }
 }
