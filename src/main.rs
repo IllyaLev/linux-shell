@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}, ExecutableCommand, terminal::{Clear, ClearType, SetTitle}, cursor::MoveTo};
+use std::{env, io};
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write};
 #[allow(unused_imports)]
@@ -8,6 +9,8 @@ use std::process::exit;
 use hostname::get;
 use chrono::Local;
 use figlet_rs::FIGfont;
+use std::fs;
+use std::path::Path;
 
 //* const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) }; 
 //* template of const color
@@ -17,6 +20,7 @@ const LIGHT_YELLOW: Color =  Color::Rgb { r: (((0xF7E733 >> 16) & 0xFF) as u8), 
 const LIGHT_GREEN: Color = Color::Rgb { r: (((0x14CC60 >> 16) & 0xFF) as u8), g: (((0x14CC60 >> 8) & 0xFF) as u8), b: (((0x14CC60 & 0xFF) as u8)) };
 #[allow(dead_code)]
 const ORANGE: Color = Color::Rgb { r: (((0xDC602E >> 16) & 0xFF) as u8), g: (((0xDC602E >> 8) & 0xFF) as u8), b: (((0xDC602E & 0xFF) as u8)) };
+const BLUE: Color = Color::Rgb { r: (((0x26408B >> 16) & 0xFF) as u8), g: (((0x26408B >> 8) & 0xFF) as u8), b: (((0x26408B & 0xFF) as u8)) };
 
 #[allow(unused_variables)]
 fn main() {
@@ -26,6 +30,11 @@ fn main() {
     let title = "Linux Shell";
 
     stdout().execute(SetTitle(title)).unwrap();
+
+    if let Err(e) = env::set_current_dir("C:\\"){
+        eprintln!("Failed to set default directory: {}", e);
+        exit(1);
+    }
 
     let username = get_username();
     let hostname = get_hostname();
@@ -95,6 +104,10 @@ fn main() {
         else if args[0] == "help"{
             help();
         }
+        else if args[0] == "ls"{
+            let path = if args.len() == 1 || args[1].is_empty() { "." } else { args[1] };
+            let _ = ls(path);
+        }
     }
 }
 
@@ -146,13 +159,56 @@ fn about(){
 
 fn help(){
     let text = "
-    Here is list of available commands:                                 \n
-        1 echo - outputs text in shell                                  \n
-        2 exit - exits shell                                            \n
-        3 about - gives information about project                       \n
-        4 hmt - outputs history of commands of current shell.           \n
-            Have 2 flags: -al and -alt                                  \n
-                -al - outputs only command                              \n
-                -alt - outputs command + date and time of it's execution\n\n";
+    Here is list of available commands:                                            \n
+        1 echo - outputs text in shell                                             \n
+        2 exit - exits shell                                                       \n
+        3 about - gives information about project                                  \n
+        4 hmt - outputs history of commands of current shell.                      \n
+            Have 2 flags: -al and -alt                                             \n
+                -al - outputs only command                                         \n
+                -alt - outputs command + date and time of it's execution           \n
+        5 ls - outputs what contain given directory                                \n
+            if you write just ls outputs what contain current directory            \n
+            if you write ls + directory that will output contain of given directory\n\n";
     print_highlighted(text.to_string(), ORANGE);
+}
+
+fn ls(path: &str) -> io::Result<()>{
+    let dir_path = Path::new(path);
+
+    if !dir_path.is_dir() {
+        eprintln!("The specified path is not a directory.");
+        return Ok(());
+    }
+    
+    println!("Listing contents of directory: {}", dir_path.display());
+
+    let mut idx: u8 = 0;
+
+    for entry in fs::read_dir(dir_path)? {
+        let entry = entry?;
+        let file_type = entry.file_type()?;
+        let name = entry.file_name();
+        let name = name.to_string_lossy();
+
+        if file_type.is_dir() {
+            print_highlighted(format!("{}/   ", name), BLUE);
+        }
+        else if file_type.is_file(){
+            print!("{}   ", name);
+        }
+        else{
+            print_highlighted(format!("{}   ", name), ORANGE);
+        }
+        idx += 1;
+        if idx == 3{
+            println!();
+            idx = 0;
+        }
+    }
+    if idx != 0 {
+        println!();
+    }
+
+    Ok(())
 }
